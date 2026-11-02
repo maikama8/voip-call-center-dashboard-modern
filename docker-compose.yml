@@ -1,0 +1,38 @@
+services:
+  callboard:
+    build: .
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      TZ: ${TZ:-UTC}
+      DATA_SOURCE: ${DATA_SOURCE:-simulated}
+      HOST: 0.0.0.0
+      PORT: 8080
+      TIMEZONE: ${TIMEZONE:-UTC}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      WEB_DIST: /app/web/dist
+      SIM_TICK_MS: ${SIM_TICK_MS:-1500}
+      SIM_SEED: ${SIM_SEED:-20261102}
+      AMI_HOST: ${AMI_HOST:-127.0.0.1}
+      AMI_PORT: ${AMI_PORT:-5038}
+      AMI_USERNAME: ${AMI_USERNAME:-callboard}
+      AMI_SECRET: ${AMI_SECRET:-}
+      AMI_RECONNECT_MS: ${AMI_RECONNECT_MS:-5000}
+      AMI_WRAPUP_SECONDS: ${AMI_WRAPUP_SECONDS:-0}
+      QUEUE_SLA: "${QUEUE_SLA:-sales:80:20,support:80:20,billing:90:15,vip:95:10}"
+      SHORT_ABANDON_SECONDS: ${SHORT_ABANDON_SECONDS:-5}
+      SLA_MIN_OFFERED: ${SLA_MIN_OFFERED:-15}
+      MAX_ABANDON_PERCENT: ${MAX_ABANDON_PERCENT:-8}
+      MAX_WAIT_SECONDS: ${MAX_WAIT_SECONDS:-60}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8080/api/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
