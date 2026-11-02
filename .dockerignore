@@ -1,0 +1,11 @@
+.git
+.gitignore
+**/node_modules
+**/dist
+.env
+coverage
+docs
+**/*.md
+**/*.test.ts
+**/*.png
+.github
